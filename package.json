@@ -1,0 +1,22 @@
+{
+  "name": "pioneer",
+  "version": "1.0.0",
+  "description": "Pioneer - Distraction-Free Practice & Knowledge Platform",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "install:all": "npm install --prefix backend && npm install --prefix user",
+    "build": "npm run build --prefix user",
+    "start": "node backend/server.js",
+    "dev:backend": "npm run dev --prefix backend",
+    "dev:user": "npm run dev --prefix user"
+  },
+  "keywords": [
+    "education",
+    "practice",
+    "aptitude",
+    "learning-platform"
+  ],
+  "author": "",
+  "license": "ISC"
+}
