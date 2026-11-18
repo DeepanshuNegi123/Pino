@@ -1,0 +1,5 @@
+1. difference in terraform_resource name and tags name 
+2 . terraform plan ->  displays all the procedures of creation of a resources in a specific manner.
+3 . terraform show -> helps to display the running instance. details 
+4.  echo 'aws_instance.web_server.public_ip' | terraform console  
+5. 
