@@ -38,7 +38,7 @@ export default function Navbar({
               title="Toggle Directory Tree"
               aria-label="Toggle Directory Tree"
             >
-              ☰
+              Menu
             </button>
           )}
 
@@ -59,7 +59,6 @@ export default function Navbar({
         {/* Center: Search Bar (Desktop) */}
         {!isAdminRoute && (
           <div className="pioneer-search-box pioneer-desktop-search">
-            <span className="pioneer-search-icon">🔍</span>
             <input
               type="text"
               className="pioneer-search-input"
@@ -78,7 +77,7 @@ export default function Navbar({
                 className="pioneer-clear-search"
                 onClick={() => onSearchChange('')}
               >
-                ✕
+                Clear
               </button>
             )}
           </div>
@@ -117,7 +116,7 @@ export default function Navbar({
             onClick={handleAdminClick}
             title="Go to Admin Upload & Management Studio"
           >
-            ⚙️ Admin Studio
+            Admin Studio
           </button>
         </nav>
 
@@ -128,7 +127,7 @@ export default function Navbar({
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           aria-label="Toggle navigation menu"
         >
-          {mobileMenuOpen ? '✕' : '☰'}
+          {mobileMenuOpen ? 'Close' : 'Menu'}
         </button>
       </div>
 
@@ -137,7 +136,6 @@ export default function Navbar({
         <div className="pioneer-mobile-drawer">
           {!isAdminRoute && (
             <div className="pioneer-search-box pioneer-mobile-search">
-              <span className="pioneer-search-icon">🔍</span>
               <input
                 type="text"
                 className="pioneer-search-input"
@@ -156,7 +154,7 @@ export default function Navbar({
                   className="pioneer-clear-search"
                   onClick={() => onSearchChange('')}
                 >
-                  ✕
+                  Clear
                 </button>
               )}
             </div>
@@ -168,7 +166,7 @@ export default function Navbar({
               className={`pioneer-mobile-nav-link ${currentView === 'landing' && !isAdminRoute ? 'active' : ''}`}
               onClick={() => handleNavClick('landing')}
             >
-              🏠 Home
+              Home
             </button>
 
             <button
@@ -176,7 +174,7 @@ export default function Navbar({
               className={`pioneer-mobile-nav-link ${currentView === 'practice' && !isAdminRoute ? 'active' : ''}`}
               onClick={() => handleNavClick('practice')}
             >
-              ✍️ Practice Questions
+              Practice Questions
             </button>
 
             <button
@@ -184,7 +182,7 @@ export default function Navbar({
               className={`pioneer-mobile-nav-link ${currentView === 'materials' && !isAdminRoute ? 'active' : ''}`}
               onClick={() => handleNavClick('materials')}
             >
-              📑 Study Notes & PDFs
+              Study Notes & PDFs
             </button>
 
             <button
@@ -192,7 +190,7 @@ export default function Navbar({
               className={`pioneer-mobile-nav-link pioneer-mobile-admin-link ${isAdminRoute ? 'active' : ''}`}
               onClick={handleAdminClick}
             >
-              ⚙️ Admin Studio (Upload & Topics)
+              Admin Studio (Upload & Topics)
             </button>
           </div>
         </div>

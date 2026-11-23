@@ -14,7 +14,7 @@ export default function AdminDashboard({
   showToast
 }) {
   // Admin Gate / Password Protection State
-  const EXPECTED_KEY = 'pioneer-admin-secret-2026';
+  const EXPECTED_KEY = 'meow';
   const [adminKeyInput, setAdminKeyInput] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
     return sessionStorage.getItem('pioneer_admin_auth') === 'true';
@@ -27,10 +27,10 @@ export default function AdminDashboard({
       sessionStorage.setItem('pioneer_admin_auth', 'true');
       setIsAuthenticated(true);
       setAuthError('');
-      showToast('🔓 Admin Studio unlocked.');
+      showToast('Admin Studio unlocked.');
     } else {
       setAuthError('Incorrect admin key. Access denied.');
-      showToast('❌ Invalid admin key.');
+      showToast('Invalid admin key.');
     }
   };
 
@@ -50,7 +50,6 @@ export default function AdminDashboard({
   const [pdfCategoryMode, setPdfCategoryMode] = useState('existing'); // 'existing' | 'new'
   const [pdfCategory, setPdfCategory] = useState(categories[0]?.category || 'Quantitative Aptitude');
   const [newPdfCategoryName, setNewPdfCategoryName] = useState('');
-  const [newPdfCategoryIcon, setNewPdfCategoryIcon] = useState('📚');
 
   const [pdfTopicMode, setPdfTopicMode] = useState('existing'); // 'existing' | 'new'
   const [pdfTopicId, setPdfTopicId] = useState(categories[0]?.topics[0]?.id || '');
@@ -63,7 +62,6 @@ export default function AdminDashboard({
   const [courseCategoryMode, setCourseCategoryMode] = useState('existing');
   const [courseCategory, setCourseCategory] = useState(categories[0]?.category || 'Quantitative Aptitude');
   const [newCourseCatName, setNewCourseCatName] = useState('');
-  const [newCourseCatIcon, setNewCourseCatIcon] = useState('🚀');
   const [newCourseTopicTitle, setNewCourseTopicTitle] = useState('');
   const [newCourseTopicSummary, setNewCourseTopicSummary] = useState('');
 
@@ -71,7 +69,6 @@ export default function AdminDashboard({
   const [qCategoryMode, setQCategoryMode] = useState('existing');
   const [qCategory, setQCategory] = useState(categories[0]?.category || 'Quantitative Aptitude');
   const [newQCategoryName, setNewQCategoryName] = useState('');
-  const [newQCategoryIcon, setNewQCategoryIcon] = useState('💡');
 
   const [qTopicMode, setQTopicMode] = useState('existing');
   const [qTopicId, setQTopicId] = useState(categories[0]?.topics[0]?.id || '');
@@ -115,7 +112,7 @@ export default function AdminDashboard({
     if (!file) return;
 
     if (!file.name.toLowerCase().endsWith('.pdf')) {
-      showToast('⚠️ Please select a valid .pdf file');
+      showToast('Please select a valid .pdf file');
       return;
     }
 
@@ -129,24 +126,23 @@ export default function AdminDashboard({
   const handlePdfSubmit = async (e) => {
     e.preventDefault();
     if (pdfSourceType === 'upload' && !pdfFile) {
-      showToast('⚠️ Please select a PDF file to upload.');
+      showToast('Please select a PDF file to upload.');
       return;
     }
     if (pdfSourceType === 's3' && !s3Url.trim()) {
-      showToast('⚠️ Please enter your AWS S3 public PDF URL.');
+      showToast('Please enter your AWS S3 public PDF URL.');
       return;
     }
 
     let finalCategoryName = pdfCategory;
-    let finalCategoryIcon = '📁';
+    let finalCategoryIcon = '';
 
     if (pdfCategoryMode === 'new') {
       if (!newPdfCategoryName.trim()) {
-        showToast('⚠️ Please enter a name for the new category.');
+        showToast('Please enter a name for the new category.');
         return;
       }
       finalCategoryName = newPdfCategoryName.trim();
-      finalCategoryIcon = newPdfCategoryIcon.trim() || '📁';
     }
 
     let targetTopicId = pdfTopicId;
@@ -154,7 +150,7 @@ export default function AdminDashboard({
 
     if (pdfCategoryMode === 'new' || pdfTopicMode === 'new') {
       if (!newPdfTopicTitle.trim()) {
-        showToast('⚠️ Please enter a title for the new subtopic.');
+        showToast('Please enter a title for the new subtopic.');
         return;
       }
       const slug = newPdfTopicTitle.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-');
@@ -177,7 +173,7 @@ export default function AdminDashboard({
     }
 
     if (!targetTopicId) {
-      showToast('⚠️ Please select or create a destination topic.');
+      showToast('Please select or create a destination topic.');
       return;
     }
 
@@ -200,7 +196,7 @@ export default function AdminDashboard({
       setPdfCategoryMode('existing');
       showToast('✅ PDF uploaded & attached to topic successfully!');
     } catch (err) {
-      showToast('❌ Failed to upload PDF: ' + err.message);
+      showToast('Failed to upload PDF: ' + err.message);
     } finally {
       setIsUploading(false);
     }
@@ -211,19 +207,18 @@ export default function AdminDashboard({
     e.preventDefault();
 
     let finalCategoryName = courseCategory;
-    let finalCategoryIcon = '📁';
+    let finalCategoryIcon = '';
 
     if (courseCategoryMode === 'new') {
       if (!newCourseCatName.trim()) {
-        showToast('⚠️ Please provide a category name.');
+        showToast('Please provide a category name.');
         return;
       }
       finalCategoryName = newCourseCatName.trim();
-      finalCategoryIcon = newCourseCatIcon.trim() || '📁';
     }
 
     if (!newCourseTopicTitle.trim()) {
-      showToast('⚠️ Please enter a subtopic title.');
+      showToast('Please enter a subtopic title.');
       return;
     }
 
@@ -256,27 +251,26 @@ export default function AdminDashboard({
   const handleQuestionSubmit = (e) => {
     e.preventDefault();
     if (!qText.trim() || !optA.trim() || !optB.trim()) {
-      showToast('⚠️ Please fill in question text and at least options A and B.');
+      showToast('Please fill in question text and at least options A and B.');
       return;
     }
 
     let finalCategoryName = qCategory;
-    let finalCategoryIcon = '📁';
+    let finalCategoryIcon = '';
 
     if (qCategoryMode === 'new') {
       if (!newQCategoryName.trim()) {
-        showToast('⚠️ Please enter a name for the new category.');
+        showToast('Please enter a name for the new category.');
         return;
       }
       finalCategoryName = newQCategoryName.trim();
-      finalCategoryIcon = newQCategoryIcon.trim() || '💡';
     }
 
     let targetTopicId = qTopicId;
 
     if (qCategoryMode === 'new' || qTopicMode === 'new') {
       if (!newQTopicTitle.trim()) {
-        showToast('⚠️ Please enter a subtopic title for this question.');
+        showToast('Please enter a subtopic title for this question.');
         return;
       }
       const slug = newQTopicTitle.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-');
@@ -298,7 +292,7 @@ export default function AdminDashboard({
     }
 
     if (!targetTopicId) {
-      showToast('⚠️ Please select or create a target topic.');
+      showToast('Please select or create a target topic.');
       return;
     }
 
@@ -328,7 +322,6 @@ export default function AdminDashboard({
     return (
       <div className="pioneer-admin-lock-screen">
         <div className="pioneer-lock-card">
-          <div className="pioneer-lock-icon">🔒</div>
           <h2>Admin Studio Restricted</h2>
           <p>
             This portal is restricted to Pioneer administrators for publishing course materials and questions.
@@ -387,7 +380,7 @@ export default function AdminDashboard({
               onClick={handleLock}
               title="Lock and sign out of admin studio"
             >
-              🔒 Lock & Sign Out
+              Lock & Sign Out
             </button>
             <button
               type="button"
@@ -405,7 +398,6 @@ export default function AdminDashboard({
         {/* Metric Cards */}
         <div className="pioneer-admin-metrics">
           <div className="pioneer-metric-card">
-            <span className="pioneer-metric-icon">📚</span>
             <div>
               <div className="pioneer-metric-value">{categories.length}</div>
               <div className="pioneer-metric-label">Subject Tracks</div>
@@ -413,7 +405,6 @@ export default function AdminDashboard({
           </div>
 
           <div className="pioneer-metric-card">
-            <span className="pioneer-metric-icon">🗂️</span>
             <div>
               <div className="pioneer-metric-value">{totalTopics}</div>
               <div className="pioneer-metric-label">Course Subtopics</div>
@@ -421,7 +412,6 @@ export default function AdminDashboard({
           </div>
 
           <div className="pioneer-metric-card">
-            <span className="pioneer-metric-icon">❓</span>
             <div>
               <div className="pioneer-metric-value">{totalQuestions}</div>
               <div className="pioneer-metric-label">Published Questions</div>
@@ -429,7 +419,6 @@ export default function AdminDashboard({
           </div>
 
           <div className="pioneer-metric-card">
-            <span className="pioneer-metric-icon">📑</span>
             <div>
               <div className="pioneer-metric-value">{allMaterials.length}</div>
               <div className="pioneer-metric-label">Attached PDF Notes</div>
@@ -444,28 +433,28 @@ export default function AdminDashboard({
             className={`pioneer-admin-tab-btn ${activeTab === 'upload-pdf' ? 'active' : ''}`}
             onClick={() => setActiveTab('upload-pdf')}
           >
-            📑 Upload & Attach PDF
+            Upload & Attach PDF
           </button>
           <button
             type="button"
             className={`pioneer-admin-tab-btn ${activeTab === 'create-topic' ? 'active' : ''}`}
             onClick={() => setActiveTab('create-topic')}
           >
-            📂 + Add Topic or Course
+            + Add Topic or Course
           </button>
           <button
             type="button"
             className={`pioneer-admin-tab-btn ${activeTab === 'add-question' ? 'active' : ''}`}
             onClick={() => setActiveTab('add-question')}
           >
-            ✍️ Add Practice Question
+            Add Practice Question
           </button>
           <button
             type="button"
             className={`pioneer-admin-tab-btn ${activeTab === 'manage-content' ? 'active' : ''}`}
             onClick={() => setActiveTab('manage-content')}
           >
-            🗂️ Stored Files ({allMaterials.length})
+            Stored Files ({allMaterials.length})
           </button>
         </div>
 
@@ -515,23 +504,13 @@ export default function AdminDashboard({
                   >
                     {categories.map((c) => (
                       <option key={c.category} value={c.category}>
-                        {c.icon || '📁'} {c.category}
+                        {c.category}
                       </option>
                     ))}
                   </select>
                 ) : (
                   <div className="pioneer-inline-create-box">
                     <div className="pioneer-inline-grid">
-                      <div>
-                        <span className="pioneer-sub-label">Icon / Emoji</span>
-                        <input
-                          type="text"
-                          className="pioneer-input pioneer-input-sm"
-                          placeholder="e.g. 🌐"
-                          value={newPdfCategoryIcon}
-                          onChange={(e) => setNewPdfCategoryIcon(e.target.value)}
-                        />
-                      </div>
                       <div className="flex-1">
                         <span className="pioneer-sub-label">New Category Name</span>
                         <input
@@ -621,14 +600,14 @@ export default function AdminDashboard({
                       className={`pioneer-mode-btn ${pdfSourceType === 'upload' ? 'active' : ''}`}
                       onClick={() => setPdfSourceType('upload')}
                     >
-                      📤 Upload PDF File
+                      Upload PDF File
                     </button>
                     <button
                       type="button"
                       className={`pioneer-mode-btn ${pdfSourceType === 's3' ? 'active' : ''}`}
                       onClick={() => setPdfSourceType('s3')}
                     >
-                      ☁️ Paste AWS S3 URL
+                      Paste AWS S3 URL
                     </button>
                   </div>
                 </div>
@@ -643,7 +622,6 @@ export default function AdminDashboard({
                       style={{ display: 'none' }}
                     />
                     <label htmlFor="admin-pdf-input" className="pioneer-dropzone-label">
-                      <span className="pioneer-drop-icon">📤</span>
                       <span className="pioneer-drop-title">
                         {pdfFile ? pdfFile.name : 'Click or drag PDF document here'}
                       </span>
@@ -672,8 +650,8 @@ export default function AdminDashboard({
                       }}
                       required={pdfSourceType === 's3'}
                     />
-                    <span style={{ fontSize: '12px', color: '#64748b' }}>
-                      💡 Paste the Object URL from your AWS S3 bucket. Pioneer will stream and embed it directly.
+                    <span style={{ fontSize: '13px', color: '#64748b' }}>
+                      Paste the Object URL from your AWS S3 bucket. Pioneer will stream and embed it directly.
                     </span>
                   </div>
                 )}
@@ -742,23 +720,13 @@ export default function AdminDashboard({
                   >
                     {categories.map((c) => (
                       <option key={c.category} value={c.category}>
-                        {c.icon || '📁'} {c.category} ({c.topics.length} topics)
+                        {c.category} ({c.topics.length} topics)
                       </option>
                     ))}
                   </select>
                 ) : (
                   <div className="pioneer-inline-create-box">
                     <div className="pioneer-inline-grid">
-                      <div>
-                        <span className="pioneer-sub-label">Icon / Emoji</span>
-                        <input
-                          type="text"
-                          className="pioneer-input pioneer-input-sm"
-                          placeholder="e.g. ⚡"
-                          value={newCourseCatIcon}
-                          onChange={(e) => setNewCourseCatIcon(e.target.value)}
-                        />
-                      </div>
                       <div className="flex-1">
                         <span className="pioneer-sub-label">Category Name</span>
                         <input
@@ -853,7 +821,7 @@ export default function AdminDashboard({
                   >
                     {categories.map((c) => (
                       <option key={c.category} value={c.category}>
-                        {c.icon || '📁'} {c.category}
+                        {c.category}
                       </option>
                     ))}
                   </select>
@@ -1051,7 +1019,6 @@ export default function AdminDashboard({
 
             {allMaterials.length === 0 ? (
               <div className="pioneer-empty-state">
-                <span className="pioneer-empty-icon">📁</span>
                 <h3>No materials uploaded yet</h3>
                 <p>Use the "Upload & Attach PDF" tab above to add documents.</p>
               </div>

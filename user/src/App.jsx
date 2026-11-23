@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import Navbar from './components/Navbar';
 import LandingPage from './components/LandingPage';
+import CoursePage from './components/CoursePage';
 import SidebarExplorer from './components/SidebarExplorer';
 import QuestionCard from './components/QuestionCard';
 import MaterialViewer from './components/MaterialViewer';
@@ -35,8 +36,11 @@ export default function App() {
   );
 
   const [searchQuery, setSearchQuery] = useState('');
+
+  // Selected course (category) for the course detail page
+  const [selectedCourse, setSelectedCourse] = useState(null);
   
-  // Navigation / Routing state: 'landing' | 'practice' | 'materials' | 'admin'
+  // Navigation / Routing state: 'landing' | 'course' | 'practice' | 'materials' | 'admin'
   const [currentRoute, setCurrentRoute] = useState(() => {
     const hash = window.location.hash.toLowerCase();
     const path = window.location.pathname.toLowerCase();
@@ -73,6 +77,8 @@ export default function App() {
     setCurrentRoute(route);
     if (route === 'admin') {
       window.location.hash = '#/admin';
+    } else if (route === 'course') {
+      window.location.hash = '#/course';
     } else if (route === 'practice') {
       window.location.hash = '#/practice';
     } else if (route === 'materials') {
@@ -89,6 +95,8 @@ export default function App() {
       const hash = window.location.hash.toLowerCase();
       if (hash.includes('admin')) {
         setCurrentRoute('admin');
+      } else if (hash.includes('course')) {
+        setCurrentRoute('course');
       } else if (hash.includes('practice')) {
         setCurrentRoute('practice');
       } else if (hash.includes('materials') || hash.includes('notes')) {
@@ -210,7 +218,7 @@ export default function App() {
           ...prev,
           {
             category: categoryName,
-            icon: categoryIcon || '📁',
+            icon: '',
             topics: [topic]
           }
         ];
@@ -423,11 +431,27 @@ export default function App() {
       console.warn('Backend delete sync failed:', err);
     }
 
-    showToast('🗑️ Material removed.');
+    showToast('Material removed.');
   };
 
-  // User click on category / topic from Landing Page
-  const handleExploreTopicFromLanding = (topic) => {
+  // User click on category / topic from Landing Page -> open Course Detail Page
+  const handleExploreCourseFromLanding = (topic, categoryName) => {
+    // Find the full category object
+    const cat = categories.find(
+      (c) => c.category === categoryName || c.topics.some((t) => t.id === topic.id)
+    );
+    if (cat) {
+      setSelectedCourse(cat);
+      navigateTo('course');
+    } else {
+      // Fallback: go directly to practice
+      setSelectedTopic(topic);
+      navigateTo('practice');
+    }
+  };
+
+  // From course page, start practicing a specific topic
+  const handleStartTopicFromCourse = (topic) => {
     setSelectedTopic(topic);
     navigateTo('practice');
   };
@@ -463,10 +487,17 @@ export default function App() {
         /* ROUTE 2: LANDING PAGE */
         <LandingPage
           categories={categories}
-          onExploreTopic={handleExploreTopicFromLanding}
+          onExploreTopic={handleExploreCourseFromLanding}
           onStartPractice={() => navigateTo('practice')}
           onOpenNotes={() => navigateTo('materials')}
           onGoToAdmin={() => navigateTo('admin')}
+        />
+      ) : currentRoute === 'course' && selectedCourse ? (
+        /* ROUTE 2.5: COURSE DETAIL PAGE */
+        <CoursePage
+          category={selectedCourse}
+          onBack={() => navigateTo('landing')}
+          onStartTopic={handleStartTopicFromCourse}
         />
       ) : (
         /* ROUTE 3: PRACTICE Q&A / STUDY NOTES EXPLORER (READ ONLY) */
@@ -543,7 +574,7 @@ export default function App() {
                       className={`pioneer-vt-btn ${currentRoute === 'materials' ? 'active' : ''}`}
                       onClick={() => navigateTo('materials')}
                     >
-                      📑 Attached Notes ({selectedTopic.materials?.length || 0})
+                      Attached Notes ({selectedTopic.materials?.length || 0})
                     </button>
                   </div>
                 </header>
@@ -573,7 +604,6 @@ export default function App() {
 
                     {filteredQuestions.length === 0 ? (
                       <div className="pioneer-empty-box">
-                        <span className="pioneer-empty-icon">🔍</span>
                         <h3>No questions match your filter</h3>
                         <p>Try clearing your search query or pick another topic from the directory.</p>
                         {searchQuery && (
@@ -618,7 +648,6 @@ export default function App() {
                       </div>
                     ) : (
                       <div className="pioneer-empty-box">
-                        <span className="pioneer-empty-icon">📄</span>
                         <h3>No reference documents attached yet</h3>
                         <p>
                           Our educators are currently curating formula sheets and PDF summaries for this topic. Check back soon!

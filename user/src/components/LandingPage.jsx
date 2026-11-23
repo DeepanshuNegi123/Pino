@@ -17,10 +17,10 @@ export default function LandingPage({ categories = [], onExploreTopic, onStartPr
     <div className="pioneer-landing">
       {/* 1. Hero Section */}
       <section className="pioneer-hero">
-        <div className="pioneer-hero-badge">
+        {/* <div className="pioneer-hero-badge">
           <span className="pioneer-pulse-dot"></span>
           <span>Open Knowledge & Practice Platform</span>
-        </div>
+        </div> */}
 
         <h1 className="pioneer-hero-title">
           Master Concepts.<br />
@@ -45,7 +45,7 @@ export default function LandingPage({ categories = [], onExploreTopic, onStartPr
             className="pioneer-btn-hero-secondary"
             onClick={onOpenNotes}
           >
-            📑 Browse Study PDFs
+             Browse Study PDFs
           </button>
         </div>
 
@@ -95,7 +95,6 @@ export default function LandingPage({ categories = [], onExploreTopic, onStartPr
                 tabIndex={0}
               >
                 <div className="pioneer-cat-top">
-                  <span className="pioneer-cat-icon">{cat.icon || '📚'}</span>
                   <span className="pioneer-cat-qcount">{catQuestions} Questions</span>
                 </div>
 
@@ -141,7 +140,6 @@ export default function LandingPage({ categories = [], onExploreTopic, onStartPr
 
         <div className="pioneer-features-grid">
           <div className="pioneer-feature-box">
-            <div className="pioneer-feat-icon">📖</div>
             <h3>No Congestion, Bigger Text</h3>
             <p>
               Generous whitespace and large readable typography engineered for long problem-solving sessions without eye strain.
@@ -149,7 +147,6 @@ export default function LandingPage({ categories = [], onExploreTopic, onStartPr
           </div>
 
           <div className="pioneer-feature-box">
-            <div className="pioneer-feat-icon">⚡</div>
             <h3>Instant Explanations</h3>
             <p>
               Reveal detailed formulas, steps, and shortcuts with one click. Test yourself first, then review the methodology.
@@ -157,7 +154,6 @@ export default function LandingPage({ categories = [], onExploreTopic, onStartPr
           </div>
 
           <div className="pioneer-feature-box">
-            <div className="pioneer-feat-icon">📑</div>
             <h3>Attached PDF Reference Sheets</h3>
             <p>
               Every topic supports high-resolution PDF notes, formula summaries, and cheat sheets embedded right beside the questions.

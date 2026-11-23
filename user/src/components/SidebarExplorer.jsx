@@ -52,7 +52,6 @@ export default function SidebarExplorer({
     <aside className={`pioneer-sidebar ${isOpen ? 'open' : 'closed'}`}>
       <div className="pioneer-sidebar-header">
         <div className="pioneer-sidebar-title">
-          <span className="pioneer-dir-icon">📁</span>
           <span>Topics Directory</span>
         </div>
         {onCloseMobile && (
@@ -62,7 +61,7 @@ export default function SidebarExplorer({
             onClick={onCloseMobile}
             aria-label="Close sidebar"
           >
-            ✕
+            Clear
           </button>
         )}
       </div>
@@ -86,8 +85,6 @@ export default function SidebarExplorer({
                   onClick={() => toggleCategory(cat.category)}
                   aria-expanded={isCatOpen}
                 >
-                  <span className="pioneer-arrow">{isCatOpen ? '▼' : '▶'}</span>
-                  <span className="pioneer-cat-ico">{cat.icon || '📂'}</span>
                   <span className="pioneer-cat-txt">{cat.category}</span>
                   <span className="pioneer-cat-badge">{totalQuestions}</span>
                 </button>
@@ -110,12 +107,11 @@ export default function SidebarExplorer({
                           role="button"
                           tabIndex={0}
                         >
-                          <span className="pioneer-topic-bullet">📄</span>
                           <span className="pioneer-topic-title-txt">{topic.title}</span>
                           <div className="pioneer-topic-counts">
                             {matCount > 0 && (
                               <span className="pioneer-mat-count" title={`${matCount} PDF note(s)`}>
-                                📑{matCount}
+                                {matCount}
                               </span>
                             )}
                             <span className="pioneer-q-count">{qCount}</span>

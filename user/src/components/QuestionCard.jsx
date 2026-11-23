@@ -31,7 +31,7 @@ export default function QuestionCard({ question, index }) {
           onClick={() => setBookmarked(!bookmarked)}
           title={bookmarked ? 'Remove bookmark' : 'Bookmark this question'}
         >
-          {bookmarked ? '★ Saved' : '☆ Bookmark'}
+          {bookmarked ? 'Saved' : 'Bookmark'}
         </button>
       </div>
 
@@ -70,7 +70,7 @@ export default function QuestionCard({ question, index }) {
                 <span className="pioneer-opt-label">{option}</span>
               </div>
               {showAnswer && isThisAnswer && (
-                <span className="pioneer-answer-pill">✓ Correct Answer</span>
+                <span className="pioneer-answer-pill">Correct Answer</span>
               )}
             </div>
           );
@@ -84,7 +84,7 @@ export default function QuestionCard({ question, index }) {
           className={`pioneer-btn-toggle-answer ${showAnswer ? 'active' : ''}`}
           onClick={() => setShowAnswer(!showAnswer)}
         >
-          {showAnswer ? 'Hide Solution ▲' : 'View Solution & Explanation ▼'}
+          {showAnswer ? 'Hide Solution' : 'View Solution & Explanation'}
         </button>
       </div>
 

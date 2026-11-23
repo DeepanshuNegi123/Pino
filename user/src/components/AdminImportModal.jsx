@@ -88,7 +88,7 @@ export default function AdminImportModal({
             </p>
           </div>
           <button type="button" className="bix-modal-close" onClick={onClose}>
-            ✕
+            Close
           </button>
         </div>
 
@@ -155,7 +155,6 @@ export default function AdminImportModal({
                 onChange={handleFileChange}
               />
               <label htmlFor="pdf-file-upload" className="bix-dropzone-label">
-                <span className="bix-dropzone-icon">📑</span>
                 <span className="bix-dropzone-text">
                   {selectedFile ? (
                     <strong>Selected: {selectedFile.name} ({(selectedFile.size / 1024 / 1024).toFixed(2)} MB)</strong>
@@ -182,7 +181,7 @@ export default function AdminImportModal({
               className="bix-btn bix-btn-primary"
               disabled={!selectedFile}
             >
-              ✓ Upload & Show in Notes
+              Upload & Show in Notes
             </button>
           </div>
         </form>

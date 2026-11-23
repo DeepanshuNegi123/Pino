@@ -78,7 +78,7 @@ export default function MaterialViewer({ materials = [] }) {
               onClick={() => setViewMode(viewMode === 'embed' ? 'card' : 'embed')}
               style={styles.toggleBtn}
             >
-              {viewMode === 'embed' ? '📋 Switch to Card View' : '🖥️ Switch to Embed View'}
+              {viewMode === 'embed' ? 'Switch to Card View' : 'Switch to Embed View'}
             </button>
             <a
               href={activeMaterial.url}
@@ -106,9 +106,8 @@ export default function MaterialViewer({ materials = [] }) {
         {viewMode === 'card' ? (
           // Clean Card View (always works even if third-party server blocks iframes with CSP)
           <div style={styles.cardPreview}>
-            <div style={styles.cardIcon}>{isPdf ? '📄' : '📊'}</div>
             <h3 style={{ margin: '8px 0 4px', color: '#1e293b' }}>{activeMaterial.title}</h3>
-            <p style={{ color: '#64748b', fontSize: '14px', maxWidth: '500px', margin: '0 auto 20px' }}>
+            <p style={{ color: '#64748b', fontSize: '15px', maxWidth: '500px', margin: '0 auto 20px' }}>
               {isPdf
                 ? 'This PDF document contains reading material and exercises.'
                 : 'This PowerPoint (.pptx) contains lecture slides and presentation visuals.'}
@@ -152,7 +151,7 @@ export default function MaterialViewer({ materials = [] }) {
             />
             <div style={styles.localNotice}>
               <span>
-                💡 If the presentation preview is blocked by third-party CSP or running on localhost, click{' '}
+                If the presentation preview is blocked by third-party CSP or running on localhost, click{' '}
                 <a
                   href={googleViewerUrl}
                   target="_blank"
@@ -176,11 +175,11 @@ const styles = {
     display: 'flex',
     flexDirection: 'column',
     width: '100%',
-    borderRadius: '12px',
+    borderRadius: '4px',
     border: '1px solid #e2e8f0',
     backgroundColor: '#ffffff',
     overflow: 'hidden',
-    boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)',
+    boxShadow: 'none',
     margin: '20px 0'
   },
   tabBar: {
@@ -196,11 +195,11 @@ const styles = {
     alignItems: 'center',
     gap: '8px',
     padding: '8px 14px',
-    borderRadius: '8px',
+    borderRadius: '4px',
     border: '1px solid #cbd5e1',
     backgroundColor: '#ffffff',
     cursor: 'pointer',
-    fontSize: '14px',
+    fontSize: '15px',
     transition: 'all 0.2s ease',
     whiteSpace: 'nowrap'
   },
@@ -216,7 +215,7 @@ const styles = {
     backgroundColor: color,
     color: '#ffffff',
     fontWeight: 'bold',
-    fontSize: '11px',
+    fontSize: '12px',
     display: 'inline-block'
   }),
   tabTitle: {
@@ -229,7 +228,7 @@ const styles = {
     padding: '10px 16px',
     backgroundColor: '#ffffff',
     borderBottom: '1px solid #f1f5f9',
-    fontSize: '14px',
+    fontSize: '15px',
     flexWrap: 'wrap',
     gap: '10px'
   },
@@ -248,8 +247,8 @@ const styles = {
     backgroundColor: '#e2e8f0',
     color: '#1e293b',
     border: '1px solid #cbd5e1',
-    borderRadius: '6px',
-    fontSize: '12px',
+    borderRadius: '4px',
+    fontSize: '13px',
     fontWeight: 500,
     cursor: 'pointer'
   },
@@ -258,8 +257,8 @@ const styles = {
     backgroundColor: '#2563eb',
     color: '#ffffff',
     textDecoration: 'none',
-    borderRadius: '6px',
-    fontSize: '12px',
+    borderRadius: '4px',
+    fontSize: '13px',
     fontWeight: 500,
     border: '1px solid #2563eb'
   },
@@ -268,8 +267,8 @@ const styles = {
     backgroundColor: '#f8fafc',
     color: '#334155',
     textDecoration: 'none',
-    borderRadius: '6px',
-    fontSize: '12px',
+    borderRadius: '4px',
+    fontSize: '13px',
     fontWeight: 500,
     border: '1px solid #cbd5e1'
   },
@@ -295,7 +294,7 @@ const styles = {
     padding: '10px 16px',
     backgroundColor: '#fef3c7',
     color: '#92400e',
-    fontSize: '12px',
+    fontSize: '13px',
     textAlign: 'center',
     borderTop: '1px solid #fde68a'
   },
@@ -318,8 +317,8 @@ const styles = {
     backgroundColor: '#2563eb',
     color: '#ffffff',
     textDecoration: 'none',
-    borderRadius: '8px',
-    fontSize: '14px',
+    borderRadius: '4px',
+    fontSize: '15px',
     fontWeight: 600
   },
   cardActionSecondary: {
@@ -327,8 +326,8 @@ const styles = {
     backgroundColor: '#f1f5f9',
     color: '#1e293b',
     textDecoration: 'none',
-    borderRadius: '8px',
-    fontSize: '14px',
+    borderRadius: '4px',
+    fontSize: '15px',
     fontWeight: 600,
     border: '1px solid #cbd5e1'
   },
@@ -342,6 +341,6 @@ const styles = {
     textAlign: 'center',
     color: '#64748b',
     border: '1px dashed #cbd5e1',
-    borderRadius: '8px'
+    borderRadius: '4px'
   }
 };

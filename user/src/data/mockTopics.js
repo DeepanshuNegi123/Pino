@@ -2,7 +2,7 @@
 export const defaultTopics = [
   {
     category: "Quantitative Aptitude",
-    icon: "📐",
+    icon: "",
     topics: [
       {
         id: "time-and-work",
@@ -164,7 +164,7 @@ Option B is correct.`,
   },
   {
     category: "Logical & Verbal Reasoning",
-    icon: "🧠",
+    icon: "",
     topics: [
       {
         id: "syllogisms",
@@ -227,7 +227,7 @@ Therefore, Suresh is the father of the boy. Option D is correct.`,
   },
   {
     category: "Computer Science & Programming",
-    icon: "💻",
+    icon: "",
     topics: [
       {
         id: "react-19",
@@ -367,7 +367,7 @@ Option B is correct.`,
   },
   {
     category: "Placement Papers & Interviews",
-    icon: "🏢",
+    icon: "",
     topics: [
       {
         id: "tcs-nqt",
@@ -396,5 +396,6 @@ Option B is correct.`,
         ]
       }
     ]
-  }
+  },
+  
 ];
