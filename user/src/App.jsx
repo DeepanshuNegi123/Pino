@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
+import { Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import LandingPage from './components/LandingPage';
 import CoursePage from './components/CoursePage';
@@ -15,6 +16,19 @@ const LOCAL_STORAGE_KEY = 'pioneer_saved_categories_v2';
 const ADMIN_API_KEY = 'pioneer-admin-secret-2026';
 
 export default function App() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // Derive currentRoute from real URL path — no more state for routing
+  const currentRoute = (() => {
+    const p = location.pathname;
+    if (p.startsWith('/admin')) return 'admin';
+    if (p.startsWith('/practice')) return 'practice';
+    if (p.startsWith('/notes')) return 'materials';
+    if (p.startsWith('/course')) return 'course';
+    return 'landing';
+  })();
+
   // Load initial categories with localStorage persistence for user-created topics
   const [categories, setCategories] = useState(() => {
     try {
@@ -39,16 +53,6 @@ export default function App() {
 
   // Selected course (category) for the course detail page
   const [selectedCourse, setSelectedCourse] = useState(null);
-  
-  // Navigation / Routing state: 'landing' | 'course' | 'practice' | 'materials' | 'admin'
-  const [currentRoute, setCurrentRoute] = useState(() => {
-    const hash = window.location.hash.toLowerCase();
-    const path = window.location.pathname.toLowerCase();
-    if (hash.includes('admin') || path.includes('/admin')) return 'admin';
-    if (hash.includes('practice')) return 'practice';
-    if (hash.includes('materials') || hash.includes('notes')) return 'materials';
-    return 'landing';
-  });
 
   // Responsive sidebar: default open on desktop (>900px), closed on mobile
   const [isSidebarOpen, setIsSidebarOpen] = useState(() => {
@@ -72,43 +76,15 @@ export default function App() {
     setTimeout(() => setToast(''), 3500);
   };
 
-  // Sync route with URL hash for easy sharing and reload stability
+  // Real URL navigation — replaces all window.location.hash calls
   const navigateTo = (route) => {
-    setCurrentRoute(route);
-    if (route === 'admin') {
-      window.location.hash = '#/admin';
-    } else if (route === 'course') {
-      window.location.hash = '#/course';
-    } else if (route === 'practice') {
-      window.location.hash = '#/practice';
-    } else if (route === 'materials') {
-      window.location.hash = '#/notes';
-    } else {
-      window.location.hash = '#/';
-    }
+    if (route === 'admin') navigate('/admin');
+    else if (route === 'course') navigate('/course');
+    else if (route === 'practice') navigate('/practice');
+    else if (route === 'materials') navigate('/notes');
+    else navigate('/');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
-
-  // Listen for hashchange events
-  useEffect(() => {
-    const handleHashChange = () => {
-      const hash = window.location.hash.toLowerCase();
-      if (hash.includes('admin')) {
-        setCurrentRoute('admin');
-      } else if (hash.includes('course')) {
-        setCurrentRoute('course');
-      } else if (hash.includes('practice')) {
-        setCurrentRoute('practice');
-      } else if (hash.includes('materials') || hash.includes('notes')) {
-        setCurrentRoute('materials');
-      } else if (hash === '#/' || hash === '' || hash === '#') {
-        setCurrentRoute('landing');
-      }
-    };
-
-    window.addEventListener('hashchange', handleHashChange);
-    return () => window.removeEventListener('hashchange', handleHashChange);
-  }, []);
 
   // 1. Load any previously saved PDFs from browser IndexedDB
   useEffect(() => {
@@ -472,199 +448,275 @@ export default function App() {
         isAdminRoute={currentRoute === 'admin'}
       />
 
-      {/* ROUTE 1: ADMIN STUDIO */}
-      {currentRoute === 'admin' ? (
-        <AdminDashboard
-          categories={categories}
-          onAddPdf={handleAdminAddPdf}
-          onAddQuestion={handleAdminAddQuestion}
-          onCreateTopic={handleCreateTopic}
-          onDeleteMaterial={handleAdminDeleteMaterial}
-          onExitAdmin={() => navigateTo('practice')}
-          showToast={showToast}
-        />
-      ) : currentRoute === 'landing' ? (
-        /* ROUTE 2: LANDING PAGE */
-        <LandingPage
-          categories={categories}
-          onExploreTopic={handleExploreCourseFromLanding}
-          onStartPractice={() => navigateTo('practice')}
-          onOpenNotes={() => navigateTo('materials')}
-          onGoToAdmin={() => navigateTo('admin')}
-        />
-      ) : currentRoute === 'course' && selectedCourse ? (
-        /* ROUTE 2.5: COURSE DETAIL PAGE */
-        <CoursePage
-          category={selectedCourse}
-          onBack={() => navigateTo('landing')}
-          onStartTopic={handleStartTopicFromCourse}
-        />
-      ) : (
-        /* ROUTE 3: PRACTICE Q&A / STUDY NOTES EXPLORER (READ ONLY) */
-        <div className="pioneer-explorer-layout">
-          {/* Mobile Sidebar Backdrop */}
-          {isSidebarOpen && (
-            <div
-              className="pioneer-mobile-backdrop"
-              onClick={() => setIsSidebarOpen(false)}
+      <Routes>
+        {/* / → Landing Page */}
+        <Route
+          path="/"
+          element={
+            <LandingPage
+              categories={categories}
+              onExploreTopic={handleExploreCourseFromLanding}
+              onStartPractice={() => navigateTo('practice')}
+              onOpenNotes={() => navigateTo('materials')}
+              onGoToAdmin={() => navigateTo('admin')}
             />
-          )}
+          }
+        />
 
-          {/* Sidebar */}
-          <SidebarExplorer
-            categories={categories}
-            selectedTopicId={selectedTopic?.id}
-            onSelectTopic={(topic) => {
-              setSelectedTopic(topic);
-              if (window.innerWidth <= 900) {
-                setIsSidebarOpen(false);
-              }
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            }}
-            searchQuery={searchQuery}
-            isOpen={isSidebarOpen}
-            onCloseMobile={() => setIsSidebarOpen(false)}
-          />
+        {/* /admin → Admin Studio */}
+        <Route
+          path="/admin"
+          element={
+            <AdminDashboard
+              categories={categories}
+              onAddPdf={handleAdminAddPdf}
+              onAddQuestion={handleAdminAddQuestion}
+              onCreateTopic={handleCreateTopic}
+              onDeleteMaterial={handleAdminDeleteMaterial}
+              onExitAdmin={() => navigateTo('practice')}
+              showToast={showToast}
+            />
+          }
+        />
 
-          {/* Main Content Area */}
-          <main className="pioneer-content-area">
-            {selectedTopic ? (
-              <div className="pioneer-content-inner">
-                {/* Mobile Breadcrumb / Directory Toggle Bar */}
-                <div className="pioneer-mobile-dir-bar">
-                  <button
-                    type="button"
-                    className="pioneer-mobile-dir-btn"
-                    onClick={() => setIsSidebarOpen(true)}
-                  >
-                    📂 Browse Topics
-                  </button>
-                  <span className="pioneer-mobile-active-topic">{selectedTopic.title}</span>
+        {/* /course → Course Detail Page */}
+        <Route
+          path="/course"
+          element={
+            selectedCourse ? (
+              <CoursePage
+                category={selectedCourse}
+                onBack={() => navigateTo('landing')}
+                onStartTopic={handleStartTopicFromCourse}
+              />
+            ) : (
+              <Navigate to="/" replace />
+            )
+          }
+        />
+
+        {/* /practice and /notes → Explorer layout (shared sidebar) */}
+        <Route
+          path="/practice"
+          element={
+            <ExplorerLayout
+              categories={categories}
+              selectedTopic={selectedTopic}
+              setSelectedTopic={setSelectedTopic}
+              isSidebarOpen={isSidebarOpen}
+              setIsSidebarOpen={setIsSidebarOpen}
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+              filteredQuestions={filteredQuestions}
+              currentCategory={currentCategory}
+              currentRoute="practice"
+              navigateTo={navigateTo}
+            />
+          }
+        />
+        <Route
+          path="/notes"
+          element={
+            <ExplorerLayout
+              categories={categories}
+              selectedTopic={selectedTopic}
+              setSelectedTopic={setSelectedTopic}
+              isSidebarOpen={isSidebarOpen}
+              setIsSidebarOpen={setIsSidebarOpen}
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+              filteredQuestions={filteredQuestions}
+              currentCategory={currentCategory}
+              currentRoute="materials"
+              navigateTo={navigateTo}
+            />
+          }
+        />
+
+        {/* Catch-all → redirect to home */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </div>
+  );
+}
+
+// ─── Extracted Explorer Layout (shared between /practice and /notes) ───────────
+function ExplorerLayout({
+  categories,
+  selectedTopic,
+  setSelectedTopic,
+  isSidebarOpen,
+  setIsSidebarOpen,
+  searchQuery,
+  setSearchQuery,
+  filteredQuestions,
+  currentCategory,
+  currentRoute,
+  navigateTo,
+}) {
+  return (
+    <div className="pioneer-explorer-layout">
+      {/* Mobile Sidebar Backdrop */}
+      {isSidebarOpen && (
+        <div
+          className="pioneer-mobile-backdrop"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
+      {/* Sidebar */}
+      <SidebarExplorer
+        categories={categories}
+        selectedTopicId={selectedTopic?.id}
+        onSelectTopic={(topic) => {
+          setSelectedTopic(topic);
+          if (window.innerWidth <= 900) {
+            setIsSidebarOpen(false);
+          }
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}
+        searchQuery={searchQuery}
+        isOpen={isSidebarOpen}
+        onCloseMobile={() => setIsSidebarOpen(false)}
+      />
+
+      {/* Main Content Area */}
+      <main className="pioneer-content-area">
+        {selectedTopic ? (
+          <div className="pioneer-content-inner">
+            {/* Mobile Breadcrumb / Directory Toggle Bar */}
+            <div className="pioneer-mobile-dir-bar">
+              <button
+                type="button"
+                className="pioneer-mobile-dir-btn"
+                onClick={() => setIsSidebarOpen(true)}
+              >
+                📂 Browse Topics
+              </button>
+              <span className="pioneer-mobile-active-topic">{selectedTopic.title}</span>
+            </div>
+
+            {/* Breadcrumbs */}
+            <nav className="pioneer-breadcrumb" aria-label="Breadcrumb">
+              <span onClick={() => navigateTo('landing')} className="pioneer-bc-link">Home</span>
+              <span className="pioneer-bc-sep">/</span>
+              <span>{currentCategory}</span>
+              <span className="pioneer-bc-sep">/</span>
+              <span className="pioneer-bc-current">{selectedTopic.title}</span>
+            </nav>
+
+            {/* Topic Header */}
+            <header className="pioneer-topic-banner">
+              <div className="pioneer-tb-text">
+                <h1 className="pioneer-topic-heading">{selectedTopic.title}</h1>
+                {selectedTopic.summary && (
+                  <p className="pioneer-topic-desc">{selectedTopic.summary}</p>
+                )}
+              </div>
+
+              {/* View Mode Switcher */}
+              <div className="pioneer-view-toggle">
+                <button
+                  type="button"
+                  className={`pioneer-vt-btn ${currentRoute === 'practice' ? 'active' : ''}`}
+                  onClick={() => navigateTo('practice')}
+                >
+                  Practice Questions ({selectedTopic.questions?.length || 0})
+                </button>
+                <button
+                  type="button"
+                  className={`pioneer-vt-btn ${currentRoute === 'materials' ? 'active' : ''}`}
+                  onClick={() => navigateTo('materials')}
+                >
+                  Attached Notes ({selectedTopic.materials?.length || 0})
+                </button>
+              </div>
+            </header>
+
+            {/* Subview 1: Practice Questions */}
+            {currentRoute === 'practice' && (
+              <section className="pioneer-questions-container">
+                <div className="pioneer-q-summary-bar">
+                  <span className="pioneer-q-count-badge">
+                    Showing <strong>{filteredQuestions.length}</strong> of{' '}
+                    <strong>{selectedTopic.questions?.length || 0}</strong> questions
+                  </span>
+
+                  <div className="pioneer-quick-jumps">
+                    <span className="pioneer-jump-label">Jump to:</span>
+                    {filteredQuestions.map((q, idx) => (
+                      <a
+                        key={q.id}
+                        href={`#q-${q.id}`}
+                        className="pioneer-jump-pill"
+                      >
+                        {q.qNumber || idx + 1}
+                      </a>
+                    ))}
+                  </div>
                 </div>
 
-                {/* Breadcrumbs */}
-                <nav className="pioneer-breadcrumb" aria-label="Breadcrumb">
-                  <span onClick={() => navigateTo('landing')} className="pioneer-bc-link">Home</span>
-                  <span className="pioneer-bc-sep">/</span>
-                  <span>{currentCategory}</span>
-                  <span className="pioneer-bc-sep">/</span>
-                  <span className="pioneer-bc-current">{selectedTopic.title}</span>
-                </nav>
-
-                {/* Topic Header */}
-                <header className="pioneer-topic-banner">
-                  <div className="pioneer-tb-text">
-                    <h1 className="pioneer-topic-heading">{selectedTopic.title}</h1>
-                    {selectedTopic.summary && (
-                      <p className="pioneer-topic-desc">{selectedTopic.summary}</p>
+                {filteredQuestions.length === 0 ? (
+                  <div className="pioneer-empty-box">
+                    <h3>No questions match your filter</h3>
+                    <p>Try clearing your search query or pick another topic from the directory.</p>
+                    {searchQuery && (
+                      <button
+                        type="button"
+                        className="pioneer-btn-primary"
+                        onClick={() => setSearchQuery('')}
+                      >
+                        Clear Filter
+                      </button>
                     )}
                   </div>
-
-                  {/* View Mode Switcher */}
-                  <div className="pioneer-view-toggle">
-                    <button
-                      type="button"
-                      className={`pioneer-vt-btn ${currentRoute === 'practice' ? 'active' : ''}`}
-                      onClick={() => navigateTo('practice')}
-                    >
-                      Practice Questions ({selectedTopic.questions?.length || 0})
-                    </button>
-                    <button
-                      type="button"
-                      className={`pioneer-vt-btn ${currentRoute === 'materials' ? 'active' : ''}`}
-                      onClick={() => navigateTo('materials')}
-                    >
-                      Attached Notes ({selectedTopic.materials?.length || 0})
-                    </button>
+                ) : (
+                  <div className="pioneer-questions-flow">
+                    {filteredQuestions.map((q, idx) => (
+                      <QuestionCard
+                        key={q.id}
+                        question={q}
+                        index={idx}
+                      />
+                    ))}
                   </div>
-                </header>
-
-                {/* Subview 1: Practice Questions */}
-                {currentRoute === 'practice' && (
-                  <section className="pioneer-questions-container">
-                    <div className="pioneer-q-summary-bar">
-                      <span className="pioneer-q-count-badge">
-                        Showing <strong>{filteredQuestions.length}</strong> of{' '}
-                        <strong>{selectedTopic.questions?.length || 0}</strong> questions
-                      </span>
-
-                      <div className="pioneer-quick-jumps">
-                        <span className="pioneer-jump-label">Jump to:</span>
-                        {filteredQuestions.map((q, idx) => (
-                          <a
-                            key={q.id}
-                            href={`#q-${q.id}`}
-                            className="pioneer-jump-pill"
-                          >
-                            {q.qNumber || idx + 1}
-                          </a>
-                        ))}
-                      </div>
-                    </div>
-
-                    {filteredQuestions.length === 0 ? (
-                      <div className="pioneer-empty-box">
-                        <h3>No questions match your filter</h3>
-                        <p>Try clearing your search query or pick another topic from the directory.</p>
-                        {searchQuery && (
-                          <button
-                            type="button"
-                            className="pioneer-btn-primary"
-                            onClick={() => setSearchQuery('')}
-                          >
-                            Clear Filter
-                          </button>
-                        )}
-                      </div>
-                    ) : (
-                      <div className="pioneer-questions-flow">
-                        {filteredQuestions.map((q, idx) => (
-                          <QuestionCard
-                            key={q.id}
-                            question={q}
-                            index={idx}
-                          />
-                        ))}
-                      </div>
-                    )}
-                  </section>
                 )}
-
-                {/* Subview 2: Study Notes (Read-Only PDF Viewer for Students) */}
-                {currentRoute === 'materials' && (
-                  <section className="pioneer-notes-container">
-                    <div className="pioneer-notes-head">
-                      <div>
-                        <h2>Study Documents & Reference PDFs</h2>
-                        <p>
-                          Formula sheets and verified notes for <strong>{selectedTopic.title}</strong>.
-                        </p>
-                      </div>
-                    </div>
-
-                    {selectedTopic.materials && selectedTopic.materials.length > 0 ? (
-                      <div className="pioneer-viewer-wrap">
-                        <MaterialViewer materials={selectedTopic.materials} />
-                      </div>
-                    ) : (
-                      <div className="pioneer-empty-box">
-                        <h3>No reference documents attached yet</h3>
-                        <p>
-                          Our educators are currently curating formula sheets and PDF summaries for this topic. Check back soon!
-                        </p>
-                      </div>
-                    )}
-                  </section>
-                )}
-              </div>
-            ) : (
-              <div className="pioneer-empty-placeholder">
-                <p>Select a topic from the directory on the left to start practicing.</p>
-              </div>
+              </section>
             )}
-          </main>
-        </div>
-      )}
+
+            {/* Subview 2: Study Notes */}
+            {currentRoute === 'materials' && (
+              <section className="pioneer-notes-container">
+                <div className="pioneer-notes-head">
+                  <div>
+                    <h2>Study Documents & Reference PDFs</h2>
+                    <p>
+                      Formula sheets and verified notes for <strong>{selectedTopic.title}</strong>.
+                    </p>
+                  </div>
+                </div>
+
+                {selectedTopic.materials && selectedTopic.materials.length > 0 ? (
+                  <div className="pioneer-viewer-wrap">
+                    <MaterialViewer materials={selectedTopic.materials} />
+                  </div>
+                ) : (
+                  <div className="pioneer-empty-box">
+                    <h3>No reference documents attached yet</h3>
+                    <p>
+                      Our educators are currently curating formula sheets and PDF summaries for this topic. Check back soon!
+                    </p>
+                  </div>
+                )}
+              </section>
+            )}
+          </div>
+        ) : (
+          <div className="pioneer-empty-placeholder">
+            <p>Select a topic from the directory on the left to start practicing.</p>
+          </div>
+        )}
+      </main>
     </div>
   );
 }

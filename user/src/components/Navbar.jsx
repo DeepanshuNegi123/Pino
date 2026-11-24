@@ -1,8 +1,10 @@
 import { useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 /**
  * Navbar: Spacious, responsive header with navigation between
  * Landing, Practice Q&A, Study Notes, Search, and Admin Studio.
+ * Uses React Router for real URL navigation.
  */
 export default function Navbar({
   currentView,
@@ -14,6 +16,11 @@ export default function Navbar({
   isAdminRoute = false
 }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // Derive active state from real URL path
+  const isActive = (path) => location.pathname === path || location.pathname.startsWith(path + '/');
 
   const handleNavClick = (view) => {
     onChangeView(view);
@@ -87,7 +94,7 @@ export default function Navbar({
         <nav className="pioneer-nav-links pioneer-desktop-nav">
           <button
             type="button"
-            className={`pioneer-nav-link ${currentView === 'landing' && !isAdminRoute ? 'active' : ''}`}
+            className={`pioneer-nav-link ${isActive('/') && !isAdminRoute && location.pathname === '/' ? 'active' : ''}`}
             onClick={() => handleNavClick('landing')}
           >
             Home
@@ -95,7 +102,7 @@ export default function Navbar({
 
           <button
             type="button"
-            className={`pioneer-nav-link ${currentView === 'practice' && !isAdminRoute ? 'active' : ''}`}
+            className={`pioneer-nav-link ${isActive('/practice') && !isAdminRoute ? 'active' : ''}`}
             onClick={() => handleNavClick('practice')}
           >
             Practice Q&A
@@ -103,7 +110,7 @@ export default function Navbar({
 
           <button
             type="button"
-            className={`pioneer-nav-link ${currentView === 'materials' && !isAdminRoute ? 'active' : ''}`}
+            className={`pioneer-nav-link ${isActive('/notes') && !isAdminRoute ? 'active' : ''}`}
             onClick={() => handleNavClick('materials')}
           >
             Study Notes & PDFs
@@ -112,7 +119,7 @@ export default function Navbar({
           {/* Admin Route Link */}
           <button
             type="button"
-            className={`pioneer-nav-admin-link ${isAdminRoute ? 'active' : ''}`}
+            className={`pioneer-nav-admin-link ${isActive('/admin') ? 'active' : ''}`}
             onClick={handleAdminClick}
             title="Go to Admin Upload & Management Studio"
           >
@@ -163,7 +170,7 @@ export default function Navbar({
           <div className="pioneer-mobile-nav-items">
             <button
               type="button"
-              className={`pioneer-mobile-nav-link ${currentView === 'landing' && !isAdminRoute ? 'active' : ''}`}
+              className={`pioneer-mobile-nav-link ${location.pathname === '/' && !isAdminRoute ? 'active' : ''}`}
               onClick={() => handleNavClick('landing')}
             >
               Home
@@ -171,7 +178,7 @@ export default function Navbar({
 
             <button
               type="button"
-              className={`pioneer-mobile-nav-link ${currentView === 'practice' && !isAdminRoute ? 'active' : ''}`}
+              className={`pioneer-mobile-nav-link ${isActive('/practice') && !isAdminRoute ? 'active' : ''}`}
               onClick={() => handleNavClick('practice')}
             >
               Practice Questions
@@ -179,7 +186,7 @@ export default function Navbar({
 
             <button
               type="button"
-              className={`pioneer-mobile-nav-link ${currentView === 'materials' && !isAdminRoute ? 'active' : ''}`}
+              className={`pioneer-mobile-nav-link ${isActive('/notes') && !isAdminRoute ? 'active' : ''}`}
               onClick={() => handleNavClick('materials')}
             >
               Study Notes & PDFs
@@ -187,7 +194,7 @@ export default function Navbar({
 
             <button
               type="button"
-              className={`pioneer-mobile-nav-link pioneer-mobile-admin-link ${isAdminRoute ? 'active' : ''}`}
+              className={`pioneer-mobile-nav-link pioneer-mobile-admin-link ${isActive('/admin') ? 'active' : ''}`}
               onClick={handleAdminClick}
             >
               Admin Studio (Upload & Topics)
