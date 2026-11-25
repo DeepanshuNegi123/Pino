@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
+import { Routes, Route, useNavigate, useLocation, Navigate, useFetcher } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import LandingPage from './components/LandingPage';
 import CoursePage from './components/CoursePage';
@@ -10,6 +10,7 @@ import AdminDashboard from './components/AdminDashboard';
 import { defaultTopics } from './data/mockTopics';
 import { savePdfToStorage, loadAllSavedPdfs } from './utils/pdfStorage';
 import './App.css';
+import Loader from  './components/loader';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || '/api';
 const LOCAL_STORAGE_KEY = 'pioneer_saved_categories_v2';
@@ -432,10 +433,38 @@ export default function App() {
     navigateTo('practice');
   };
 
+ 
+  const [loader , setisloading] = useState(true);
+
   return (
     <div className="pioneer-app-root">
       {/* Toast Alert */}
-      {toast && <div className="pioneer-toast">{toast}</div>}
+      {/* {toast && <div className="pioneer-toast">{toast}</div>} */}
+
+
+   {   
+   
+   useEffect(()=>{
+
+     setTimeout(() => {
+
+      setisloading(()=>(false));
+      
+     }, 5000);
+
+   },[])
+  
+  
+  
+  }
+      
+      {
+
+         (loader==true && <Loader/>)
+
+
+
+      }
 
       {/* Top Navbar */}
       <Navbar

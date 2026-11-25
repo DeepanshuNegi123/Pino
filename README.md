@@ -89,3 +89,10 @@ Visit `http://localhost:5000` to see your live platform!
 | `#/practice` | Practice Questions with solutions & jump pills | Public (Read-only) |
 | `#/notes` | Study Documents & Embedded PDF Viewer | Public (Read-only) |
 | `#/admin` | Admin Management Studio (Upload PDFs, Add Q&A) | Admin Portal |
+
+
+
+DEVOPS 
+
+TERRAFORM 
+

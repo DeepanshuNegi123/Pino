@@ -29,6 +29,16 @@
   padding: 0;
 }
 
+loader {
+
+  font-family:roman;
+  background:yellow;
+  color:white;
+  font-size:12px;
+  
+
+}
+
 body {
   font-family: var(--font-family);
   background-color: var(--bg-main);

@@ -1,0 +1,30 @@
+---
+- name: Install and Configure Nagios
+  hosts: sshhost  # here we find inventory file and then get the values
+  become: yes
+
+  tasks:
+
+    - name: Update apt package cache
+      apt:
+        update_cache: yes
+
+    - name: Install Nagios and dependencies
+      apt:
+        name:
+          - nagios4
+          - nagios-plugins
+          - nagios-nrpe-plugin
+        state: present
+
+    - name: Enable Nagios service
+      service:
+        name: nagios4
+        enabled: yes
+        state: started
+
+    - name: Enable Apache2 service (Nagios web UI)
+      service:
+        name: apache2
+        enabled: yes
+        state: started

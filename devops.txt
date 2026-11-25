@@ -2,4 +2,5 @@
 2 . terraform plan ->  displays all the procedures of creation of a resources in a specific manner.
 3 . terraform show -> helps to display the running instance. details 
 4.  echo 'aws_instance.web_server.public_ip' | terraform console  
-5. 
+5. aws_instance.resource_name.public_ip  ->  will fetch the publicip of that instance 
+6. 
